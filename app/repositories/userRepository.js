@@ -16,4 +16,12 @@ const findUserByUsername = async (username) => {
 const findUserByEmail = async(email) => {
   return await db('users').where({email}).first();
 }
-module.exports = { createUser, findUserByUsername,findUserByEmail };
+
+
+const generateToken = (userId) => {
+  return jwt.sign({ id: userId }, config.jwt.secret, {
+    expiresIn: config.jwt.expiresIn,
+  });
+};
+
+module.exports = { createUser, findUserByUsername,findUserByEmail,generateToken };

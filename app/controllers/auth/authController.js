@@ -1,16 +1,7 @@
 const jwt = require('jsonwebtoken');
-const config = require('../../config/app');
-const { hashPassword, comparePassword } = require('../helpers/password');
-const { validateLoginInput } = require('../requests/login');
-const { validateRegisterInput } = require('../requests/register');
-
-const userModel = require('../repositories/userRepository');
-
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, config.jwt.secret, {
-    expiresIn: config.jwt.expiresIn,
-  });
-};
+const config = require('../../../config/app');
+const { hashPassword, comparePassword } = require('../../helpers/password');
+const userModel = require('../../repositories/userRepository');
 
 const register = async (req, res, next) => {
   try {
@@ -27,7 +18,7 @@ const register = async (req, res, next) => {
     });
 
     // Generate token
-    const token = generateToken(userId);
+    const token = userModel.generateToken(userId);
 
     res.status(201).json({
       id: userId,
@@ -57,7 +48,7 @@ const login = async (req, res, next) => {
     }
 
     // Generate token
-    const token = generateToken(user.id);
+    const token = userModel.generateToken(user.id);
 
     res.status(200).json({
       id: user.id,
