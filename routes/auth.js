@@ -2,20 +2,14 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../app/controllers/authController');
 const auth = require('../app/middleware/auth');
+const {loginValidator } = require('../app/requests/login');
+const {registerValidator } = require('../app/requests/register');
+const validate = require('../app/middleware/validate');
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
-router.post('/register', authController.register);
+router.post('/register', registerValidator, validate, authController.register);
 
-// @route   POST /api/auth/login
-// @desc    Login user
-// @access  Public
-router.post('/login', authController.login);
+router.post('/login', loginValidator, validate, authController.login);
 
-// @route   GET /api/auth/user
-// @desc    Get current user (protected route example)
-// @access  Private
 router.get('/user', auth, (req, res) => {
   res.json({ userId: req.userId });
 });

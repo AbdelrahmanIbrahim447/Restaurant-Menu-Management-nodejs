@@ -16,23 +16,6 @@ const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
-    // Validate input
-    const { valid, errors } = validateRegisterInput(username, email, password);
-    if (!valid) {
-      return res.status(400).json({ errors });
-    }
-
-    // Check if user already exists
-    const existingUserByUsername = await userModel.findUserByUsername(username);
-    if (existingUserByUsername) {
-      return res.status(400).json({ error: 'Username already exists' });
-    }
-
-    const existingUserByEmail = await userModel.findUserByEmail(email);
-    if (existingUserByEmail) {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
-
     // Hash password
     const hashedPassword = await hashPassword(password);
 
@@ -60,12 +43,6 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-
-    // Validate input
-    const { valid, errors } = validateLoginInput(username, password);
-    if (!valid) {
-      return res.status(400).json({ errors });
-    }
 
     // Find user
     const user = await userModel.findUserByUsername(username);

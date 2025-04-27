@@ -13,4 +13,7 @@ const findUserByUsername = async (username) => {
   return await db('users').where({ username }).first();
 };
 
-module.exports = { createUser, findUserByUsername };
+const findUserByEmail = async(email) => {
+  return await db('users').where({email}).first();
+}
+module.exports = { createUser, findUserByUsername,findUserByEmail };

@@ -1,31 +1,26 @@
-const validateRegisterInput = (username, email, password) => {
-    const errors = {};
-    
-    if (!username || username.trim() === '') {
-      errors.username = 'Username is required';
-    }
+const { body } = require('express-validator');
+const User = require('../models/user');
+
+const registerValidator = [
+  body('username')
+    .notEmpty().withMessage('Username is required')
+    .isLength({ min: 3 }).withMessage('Username must be at least 3 characters')
+  , 
   
-    if (!email || email.trim() === '') {
-      errors.email = 'Email is required';
-    } else {
-      const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
-      if (!email.match(regEx)) {
-        errors.email = 'Email must be a valid email address';
-      }
-    }
+  body('email')
+    .notEmpty().withMessage('Email is required')
+    .isEmail().withMessage('Must be a valid email')
+    .custom(async email => {
+      if(!email) throw new Error('no Email found');
+      const user = await User.findUserByEmail(email);
+      if (user) throw new Error('Email already in use');
+    }),
   
-    if (!password || password === '') {
-      errors.password = 'Password is required';
-    } else if (password.length < 6) {
-      errors.password = 'Password must be at least 6 characters long';
-    }
-  
-    return {
-      errors,
-      valid: Object.keys(errors).length < 1,
-    };
-  };
-  
+  body('password')
+    .notEmpty().withMessage('Password is required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters')
+];
   module.exports = {
-    validateRegisterInput,
+    registerValidator,
   };
