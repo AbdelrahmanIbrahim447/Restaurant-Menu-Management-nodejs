@@ -4,7 +4,7 @@ const { hashPassword, comparePassword } = require('../helpers/password');
 const { validateLoginInput } = require('../requests/login');
 const { validateRegisterInput } = require('../requests/register');
 
-const userModel = require('../models/user');
+const userModel = require('../repositories/userRepository');
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, config.jwt.secret, {
