@@ -42,10 +42,10 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     // Find user
-    const user = await userModel.findUserByUsername(username);
+    const user = await userModel.findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
