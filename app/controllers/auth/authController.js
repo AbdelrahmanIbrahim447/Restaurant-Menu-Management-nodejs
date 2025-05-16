@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('../../../config/app');
 const { hashPassword, comparePassword } = require('../../helpers/password');
-const userModel = require('../../repositories/userRepository');
+const userRepo = require('../../repositories/userRepository');
 
 const register = async (req, res, next) => {
   try {
@@ -11,14 +11,14 @@ const register = async (req, res, next) => {
     const hashedPassword = await hashPassword(password);
 
     // Create user
-    const userId = await userModel.createUser({
+    const userId = await userRepo.create({
       username,
       email,
       password: hashedPassword,
     });
 
     // Generate token
-    const token = userModel.generateToken(userId);
+    const token = userRepo.generateToken(userId);
 
     res.status(201).json({
       id: userId,
@@ -36,7 +36,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await userModel.findUserByColumn('email',email,['id','username','email','password','created_at']);
+    const user = await userRepo.findByColumn('email',email,['id','username','email','password','created_at']);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -48,7 +48,7 @@ const login = async (req, res, next) => {
     }
 
     // Generate token
-    const token = userModel.generateToken(user.id);
+    const token = userRepo.generateToken(user.id);
     res.status(200).json({
       id: user.id,
       username: user.username,

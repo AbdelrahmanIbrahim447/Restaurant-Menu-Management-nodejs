@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, config.jwt.secret);
     // Add user from payload to request object
     req.userId = decoded.id;
-    req.user = await user.findUser("id",decoded.id);
+    req.user = await user.find(decoded.id);
 
     next();
   } catch (error) {

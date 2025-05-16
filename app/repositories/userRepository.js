@@ -11,7 +11,7 @@ class UserRepository {
   }
 
   // CRUD Operations
-  async createUser({ username, email, password }) {
+  async create({ username, email, password }) {
     return await this.repository.create({
       username,
       email,
@@ -19,57 +19,57 @@ class UserRepository {
     });
   }
 
-  async findUser(id, columns = publicProp) {
+  async find(id, columns = publicProp) {
     return await this.repository.find(id, columns);
   }
 
-  async findUserByUsername(username) {
+  async findByUsername(username) {
     return await this.repository.findBy('username', username);
   }
 
-  async findUserByEmail(email) {
+  async findByEmail(email) {
     return await this.repository.findBy('email', email);
   }
 
-  async findUserByColumn(column, value, select = publicProp) {
+  async findByColumn(column, value, select = publicProp) {
     return await this.repository.findBy(column, value, select);
   }
 
-  async updateUser(id, data) {
+  async update(id, data) {
     return await this.repository.update(id, data);
   }
 
-  async deleteUser(id) {
+  async delete(id) {
     return await this.repository.delete(id);
   }
 
   // Soft Delete Operations
-  async forceDeleteUser(id) {
+  async forceDelete(id) {
     return await this.repository.forceDelete(id);
   }
 
-  async restoreUser(id) {
+  async restore(id) {
     return await this.repository.restore(id);
   }
 
-  async findTrashedUser(id, columns = publicProp) {
+  async findTrashed(id, columns = publicProp) {
     return await this.repository.findWithTrashed(id, columns);
   }
 
   // Query Operations
-  async getAllUsers(columns = publicProp) {
+  async getAlls(columns = publicProp) {
     return await this.repository.all(columns);
   }
 
-  async getAllUsersWithTrashed(columns = publicProp) {
+  async getAllsWithTrashed(columns = publicProp) {
     return await this.repository.allWithTrashed(columns);
   }
 
-  async getUsersByConditions(conditions, columns = publicProp) {
+  async getsByConditions(conditions, columns = publicProp) {
     return await this.repository.where(conditions, columns);
   }
 
-  async findUserByConditions(conditions, columns = publicProp) {
+  async findByConditions(conditions, columns = publicProp) {
     return await this.repository.firstWhere(conditions, columns);
   }
 
