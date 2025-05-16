@@ -49,7 +49,6 @@ const login = async (req, res, next) => {
 
     // Generate token
     const token = userModel.generateToken(user.id);
-
     res.status(200).json({
       id: user.id,
       username: user.username,
@@ -57,6 +56,7 @@ const login = async (req, res, next) => {
       token,
     });
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };
