@@ -7,7 +7,7 @@ const publicProp = ['id','username','email','created_at','updated_at'];
 
 class UserRepository {
   constructor() {
-    this.repository = new MysqlRepositoryConcrete('users');
+    this.repository = new MysqlRepositoryConcrete('users',false);
   }
 
   // CRUD Operations

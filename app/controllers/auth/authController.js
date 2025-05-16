@@ -36,7 +36,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await userModel.findUserByEmail(email);
+    const user = await userModel.findUserByColumn('email',email,['id','username','email','password','created_at']);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
