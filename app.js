@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const authRoutes = require('./routes/auth');
+const resturantRoutes = require('./routes/resturant');
 const errorHandler = require('./app/middleware/errorHandler');
 const config = require('./config/app');
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/resturant', resturantRoutes);
 
 // Test route
 app.get('/', (req, res) => {

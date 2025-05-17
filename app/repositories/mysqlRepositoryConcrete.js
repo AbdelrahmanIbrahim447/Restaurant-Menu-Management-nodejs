@@ -38,8 +38,40 @@ class MysqlRepositoryConcrete {
     );
   }
 
+
+
+  // Get paginated records
+  async paginate(conditions = {}, columns = ['*'], page = 1, perPage = 10, withTrashed = false) {
+    const offset = (page - 1) * perPage;
+    let query = this.getBaseQuery().where(conditions).orderBy('created_at', 'desc').select(columns);
+
+    if (this.hasSoftDelete) {
+      query = withTrashed ? this.addWithTrashedCondition(query) : this.addSoftDeleteCondition(query);
+    }
+
+    // Clone the query for counting total
+    const countQuery = query.clone().clearSelect().count({ total: '*' }).first();
+
+    // Get paginated data
+    const dataQuery = query.clone().limit(perPage).offset(offset);
+
+    // Execute both queries
+    const [countResult, data] = await Promise.all([countQuery, dataQuery]);
+    const total = parseInt(countResult.total, 10);
+
+    return {
+      data,
+      pagination: {
+        total,
+        perPage,
+        currentPage: page,
+        lastPage: Math.ceil(total / perPage)
+      }
+    };
+  }
+
   // Create a new record
-  async create(data) {
+  async create(data = {}) {
     const [id] = await db(this.table).insert(data);
     return id;
   }
@@ -106,22 +138,22 @@ class MysqlRepositoryConcrete {
   }
 
   // Update a record
-  async update(id, data) {
+  async update(conditions = {}, data) {
     if (this.hasSoftDelete) {
       data.updated_at = new Date();
     }
     return await db(this.table)
-      .where({ id })
+      .where(conditions)
       .update(data);
   }
 
   // Soft delete a record
-  async delete(id) {
+  async delete(conditions = {}) {
     if (!this.hasSoftDelete) {
       throw new Error(`Table ${this.table} does not support soft delete`);
     }
     return await db(this.table)
-      .where({ id })
+      .where(conditions)
       .update({ deleted_at: new Date() });
   }
 
@@ -204,20 +236,6 @@ class MysqlRepositoryConcrete {
     ).first();
   }
 
-  // Update a record
-  async update(id, data) {
-    data.updated_at = new Date();
-    return await db(this.table)
-      .where({ id })
-      .update(data);
-  }
-
-  // Soft delete a record
-  async delete(id) {
-    return await db(this.table)
-      .where({ id })
-      .update({ deleted_at: new Date() });
-  }
 
   // Force delete a record
   async forceDelete(id) {
